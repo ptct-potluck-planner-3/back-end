@@ -12,11 +12,20 @@ The following tutorial explains how to set up this project using PostgreSQL and 
 - A Heroku app with the [Heroku PostgreSQL Addon](https://devcenter.heroku.com/articles/heroku-postgresql#provisioning-heroku-postgres) added to it.
 - Development and testing databases created with [pgAdmin 4](https://www.pgadmin.org/docs/pgadmin4/4.29/database_dialog.html).
 
+## Notes
+- To pus to Heroku using the CLI. This is not something you want to do often, most likely just at the end of the project when everything is done. 
+  -git add .
+  -git commit -m "Descriptive message here Ex: Heroku push ..."
+  -git push heroku <branch-name>
+    -Ex: -git push heroku main
+
 ## Starting a New Project
 
 - Create a new repository using this template, and clone it to your local.
 - Create a `.env` file and follow the instructions inside `knexfile.js`.
 - Fix the scripts inside `package.json` to use your Heroku app.
+
+    
 
 ## Scripts
 
