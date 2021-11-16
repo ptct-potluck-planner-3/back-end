@@ -35,6 +35,22 @@ router.post("/login", async (req, res) => {
 	});
 });
 
+router.post(`/logout`, async (req, res) => {
+	const token = req.headers.authorization;
+	const decoded = jwt.verify(token, JWT_SECRET);
+	if (decoded) {
+		Users.logout()
+			.then(() => {
+				res.status(200).json({ message: `logout successful` });
+			})
+			.catch((err) => {
+				res.status(400).json({ message: `logout unsuccessful` + err.message });
+			});
+	} else {
+		res.status(401).json({ message: `must be logged in to log out` });
+	}
+});
+
 function makeToken(user) {
 	const payload = {
 		subject: user.id,
