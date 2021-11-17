@@ -52,4 +52,15 @@ function update(event_id, changes) {
 		.update(changes);
 }
 
-module.exports = { getAllEvents, findById, findBy, insertEvent, update };
+function remove(event_id) {
+  return db("events").where("event_id", event_id).del();
+}
+
+module.exports = {
+  getAllEvents,
+  findById,
+  findBy,
+  insertEvent,
+  update,
+  remove,
+};
