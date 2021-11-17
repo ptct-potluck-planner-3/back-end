@@ -13,8 +13,9 @@ router.get(`/`, (req, res) => {
 		});
 });
 
-router.get(`/:event_id`, (req, res) => {
-	Events.findById(req.params.event_id)
+router.get(`/:id`, async (req, res) => {
+	const { id } = req.params;
+	Events.findById(id)
 		.then((event) => {
 			res.status(200).json(event);
 		})
@@ -35,10 +36,11 @@ router.post(`/`, (req, res) => {
 		});
 });
 
-router.put(`/:event_id`, (req, res) => {
+router.put(`/:id`, (req, res) => {
+	const { id } = req.params;
 	const changes = req.body;
 
-	Events.update(req.params.event_id, changes)
+	Events.update(id, changes)
 		.then((updatedEvent) => {
 			res.status(200).json(updatedEvent);
 		})
@@ -47,8 +49,9 @@ router.put(`/:event_id`, (req, res) => {
 		});
 });
 
-router.delete(`/:event_id`, (req, res) => {
-	Events.remove(req.params.event_id)
+router.delete(`/:id`, (req, res) => {
+	const { id } = req.params;
+	Events.remove(id)
 		.then((deleted) => {
 			res.status(200).json(deleted);
 		})
