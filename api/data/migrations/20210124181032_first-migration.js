@@ -1,20 +1,20 @@
 exports.up = async (knex) => {
   await knex.schema.createTable("users", (users) => {
     users.increments("user_id");
-    users.string("username", 200).notNullable();
+    users.string("username", 200).notNullable().unique();//unique 
     users.string("password", 200).notNullable();
     users.string("role", 200).notNullable();
   });
   await knex.schema.createTable("events", (events) => {
     events.increments("event_id");
-    events.string("event_name", 200).notNullable();
+    events.string("event_name", 200).notNullable().unique(); //unique
     events.date("event_date").notNullable();
     events.time("event_time").notNullable();
     events.string("event_location", 200).notNullable();
   });
   await knex.schema.createTable("items", (items) => {
     items.increments("item_id");
-    items.string("item_name", 200).notNullable();
+    items.string("item_name", 200).notNullable(); 
   });
   await knex.schema.createTable("eu_appoint", (eu_appoint) => {
     eu_appoint.increments("eu_id");
