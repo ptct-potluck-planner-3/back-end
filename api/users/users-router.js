@@ -2,7 +2,7 @@ const router = require("express").Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../../secrets");
-const Users = require("../users/users-model");
+const Users = require("./users-model");
 
 router.get("/", async (req, res) => {
 	res.json(await Users.findAllUsers());
