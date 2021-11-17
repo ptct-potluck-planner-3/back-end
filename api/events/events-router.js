@@ -4,7 +4,7 @@ const Events = require(`./events-model`);
 const router = express.Router();
 
 router.get(`/`, (req, res) => {
-	Events.getEvents()
+	Events.getAllEvents()
 		.then((events) => {
 			res.status(200).json(events);
 		})
@@ -14,7 +14,7 @@ router.get(`/`, (req, res) => {
 });
 
 router.get(`/:event_id`, (req, res) => {
-	Events.getById(req.params.event_id)
+	Events.findById(req.params.event_id)
 		.then((event) => {
 			res.status(200).json(event);
 		})
@@ -26,7 +26,7 @@ router.get(`/:event_id`, (req, res) => {
 router.post(`/`, (req, res) => {
 	let theEvent = req.body;
 
-	Events.create(theEvent)
+	Events.insertEvent(theEvent)
 		.then((newEvent) => {
 			res.status(201).json(newEvent);
 		})
