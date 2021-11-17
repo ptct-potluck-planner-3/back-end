@@ -5,7 +5,7 @@ const { JWT_SECRET } = require("../../secrets");
 const Users = require("../users/users-model");
 
 router.get("/", async (req, res) => {
-	res.json(await Users.getAllUsers());
+	res.json(await Users.findAllUsers());
 });
 
 router.post("/register", async (req, res) => {
