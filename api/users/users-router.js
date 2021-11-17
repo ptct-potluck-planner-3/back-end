@@ -8,6 +8,18 @@ router.get("/", async (req, res) => {
 	res.json(await Users.findAllUsers());
 });
 
+router.get("/:id", async (req, res) => {
+	const { id } = req.params;
+
+	Users.findById(id)
+		.then((found) => {
+			res.status(200).json(found);
+		})
+		.catch((err) => {
+			res.status(404).json({ message: err });
+		});
+});
+
 router.post("/register", async (req, res) => {
 	let user = req.body;
 	const rounds = process.env.BCRYPT_ROUNDS || 8;

@@ -13,4 +13,8 @@ server.use(cors());
 server.use(`/api/users`, usersRouter);
 server.use(`/api/events`, eventsRouter);
 
+server.get("/", (req, res) => {
+	res.json({ api: "API is UP!" });
+});
+
 module.exports = server;
