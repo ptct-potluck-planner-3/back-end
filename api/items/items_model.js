@@ -16,8 +16,8 @@ function findById(item_id) {
     .first();
 }
 
-async function insertNewItem(user) {
-  const [id] = await db("items").insert(user, "item_id");
+async function insertNewItem(item) {
+  const [id] = await db("items").insert(item, "item_id");
   return findById(id);
 }
 
