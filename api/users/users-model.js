@@ -1,4 +1,4 @@
-const db = require("../data/db-config");
+import db from "../data/db-config";
 
 function findAllUsers() {
 	return db("users").select("user_id", "username", "role", "password");
