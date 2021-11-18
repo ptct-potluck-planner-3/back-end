@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../../secrets");
 const Users = require("./users-model");
+const MW = require(`./users-middleware`);
 
 router.get("/", async (req, res) => {
 	res.json(await Users.findAllUsers());
@@ -20,22 +21,27 @@ router.get("/:id", async (req, res) => {
 		});
 });
 
-router.post("/register", async (req, res) => {
-	let user = req.body;
-	const rounds = process.env.BCRYPT_ROUNDS || 8;
-	const hash = bcrypt.hashSync(user.password, rounds);
-	user.password = hash;
+router.post(
+	"/register",
+	MW.checkUserPayload,
+	MW.checkUsernameIsUnique,
+	async (req, res) => {
+		let user = req.body;
+		const rounds = process.env.BCRYPT_ROUNDS || 8;
+		const hash = bcrypt.hashSync(user.password, rounds);
+		user.password = hash;
 
-	Users.insertUser(user)
-		.then((newUser) => {
-			res.status(201).json(newUser);
-		})
-		.catch((err) => {
-			res.status(400).json({ message: err });
-		});
-});
+		Users.insertUser(user)
+			.then((newUser) => {
+				res.status(201).json(newUser);
+			})
+			.catch((err) => {
+				res.status(400).json({ message: err });
+			});
+	}
+);
 
-router.post("/login", async (req, res) => {
+router.post("/login", MW.checkLoginPayload, async (req, res) => {
 	let { username, password } = req.body;
 	Users.findBy(username).then((user) => {
 		if (user && bcrypt.compareSync(password, user.password)) {
@@ -47,7 +53,7 @@ router.post("/login", async (req, res) => {
 	});
 });
 
-router.post(`/logout`, async (req, res) => {
+router.post(`/logout`, MW.restricted, async (req, res) => {
 	const token = req.headers.authorization;
 	const decoded = jwt.verify(token, JWT_SECRET);
 	if (decoded) {

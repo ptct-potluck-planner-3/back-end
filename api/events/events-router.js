@@ -1,9 +1,11 @@
 const express = require(`express`);
 const Events = require(`./events-model`);
+const UsersMW = require(`../users/users-middleware`);
+const EventsMW = require(`./events-middleware`);
 
 const router = express.Router();
 
-router.get(`/`, (req, res) => {
+router.get(`/`, UsersMW.restricted, (req, res) => {
 	Events.getAllEvents()
 		.then((events) => {
 			res.status(200).json(events);
@@ -13,18 +15,23 @@ router.get(`/`, (req, res) => {
 		});
 });
 
-router.get(`/:id`, async (req, res) => {
-	const { id } = req.params;
-	Events.findById(id)
-		.then((event) => {
-			res.status(200).json(event);
-		})
-		.catch((err) => {
-			res.status(500).json({ message: err.message });
-		});
-});
+router.get(
+	`/:id`,
+	UsersMW.restricted,
+	EventsMW.checkEventId,
+	async (req, res) => {
+		const { id } = req.params;
+		Events.findById(id)
+			.then((event) => {
+				res.status(200).json(event);
+			})
+			.catch((err) => {
+				res.status(500).json({ message: err.message });
+			});
+	}
+);
 
-router.post(`/`, (req, res) => {
+router.post(`/`, UsersMW.restricted, EventsMW.checkEventPayload, (req, res) => {
 	let theEvent = req.body;
 
 	Events.insertEvent(theEvent)
@@ -36,7 +43,7 @@ router.post(`/`, (req, res) => {
 		});
 });
 
-router.put(`/:id`, (req, res) => {
+router.put(`/:id`, UsersMW.restricted, EventsMW.checkEventId, (req, res) => {
 	const { id } = req.params;
 	const changes = req.body;
 
@@ -49,7 +56,7 @@ router.put(`/:id`, (req, res) => {
 		});
 });
 
-router.delete(`/:id`, (req, res) => {
+router.delete(`/:id`, UsersMW.restricted, EventsMW.checkEventId, (req, res) => {
 	const { id } = req.params;
 	Events.remove(id)
 		.then((deleted) => {
