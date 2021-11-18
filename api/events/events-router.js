@@ -5,19 +5,39 @@ const EventsMW = require(`./events-middleware`);
 
 const router = express.Router();
 
-router.get(`/`, UsersMW.restricted, (req, res) => {
-	Events.getAllEvents()
-		.then((events) => {
-			res.status(200).json(events);
-		})
-		.catch((err) => {
-			res.status(400).json({ message: err.message });
-		});
-});
+router.get(
+	`/`,
+	//  UsersMW.restricted,
+	(req, res) => {
+		Events.getAllEvents()
+			.then((events) => {
+				res.status(200).json(events);
+			})
+			.catch((err) => {
+				res.status(400).json({ message: err.message });
+			});
+	}
+);
+
+router.get(
+	`/:event_name`,
+	// UsersMW.restricted,
+	EventsMW.checkEventId,
+	async (req, res) => {
+		const { event_name } = req.params;
+		Events.findById(event_name)
+			.then((event) => {
+				res.status(200).json(event);
+			})
+			.catch((err) => {
+				res.status(500).json({ message: err.message });
+			});
+	}
+);
 
 router.get(
 	`/:id`,
-	UsersMW.restricted,
+	// UsersMW.restricted,
 	EventsMW.checkEventId,
 	async (req, res) => {
 		const { id } = req.params;
@@ -31,17 +51,22 @@ router.get(
 	}
 );
 
-router.post(`/`, UsersMW.restricted, EventsMW.checkEventPayload, (req, res) => {
-	let theEvent = req.body;
+router.post(
+	`/`,
+	// , UsersMW.restricted
+	EventsMW.checkEventPayload,
+	(req, res) => {
+		let theEvent = req.body;
 
-	Events.insertEvent(theEvent)
-		.then((newEvent) => {
-			res.status(201).json(newEvent);
-		})
-		.catch((err) => {
-			res.status(500).json({ message: err.message });
-		});
-});
+		Events.insertEvent(theEvent)
+			.then((newEvent) => {
+				res.status(201).json(newEvent);
+			})
+			.catch((err) => {
+				res.status(500).json({ message: err.message });
+			});
+	}
+);
 
 router.put(`/:id`, UsersMW.restricted, EventsMW.checkEventId, (req, res) => {
 	const { id } = req.params;
