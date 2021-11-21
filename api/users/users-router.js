@@ -46,23 +46,14 @@ router.post("/login", MW.checkLoginPayload, async (req, res) => {
 	Users.findBy(username).then((user) => {
 		if (user && bcrypt.compareSync(password, user.password)) {
 			const token = makeToken(user);
-			res.status(200).json({ message: `welcome, ${user.username}`, token });
+			res
+				.status(200)
+				.json({ message: `welcome, ${user.username}, ${user.user_id}`, token });
 		} else {
 			res.status(401).json({ message: "invalid credentials" });
 		}
 	});
 });
-
-// router.post("/login", MW.checkLoginPayload, async (req, res) => {
-// 	let { username, password } = req.body;
-// 	console.log(username, password);
-// 	if (bcrypt.compareSync(password, password)) {
-// 		const token = makeToken(req.body);
-// 		res.status(200).json({ message: `welcome, ${username}`, token });
-// 	} else {
-// 		res.status(401).json({ message: "invalid credentials" });
-// 	}
-// });
 
 router.post(`/logout`, MW.restricted, async (req, res) => {
 	const token = req.headers.authorization;
