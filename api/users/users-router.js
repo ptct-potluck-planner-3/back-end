@@ -53,6 +53,17 @@ router.post("/login", MW.checkLoginPayload, async (req, res) => {
 	});
 });
 
+// router.post("/login", MW.checkLoginPayload, async (req, res) => {
+// 	let { username, password } = req.body;
+// 	console.log(username, password);
+// 	if (bcrypt.compareSync(password, password)) {
+// 		const token = makeToken(req.body);
+// 		res.status(200).json({ message: `welcome, ${username}`, token });
+// 	} else {
+// 		res.status(401).json({ message: "invalid credentials" });
+// 	}
+// });
+
 router.post(`/logout`, MW.restricted, async (req, res) => {
 	const token = req.headers.authorization;
 	const decoded = jwt.verify(token, JWT_SECRET);
@@ -71,11 +82,12 @@ router.post(`/logout`, MW.restricted, async (req, res) => {
 
 function makeToken(user) {
 	const payload = {
-		subject: user.id,
+		subject: user.user_id,
 		username: user.username,
+		role: user.role,
 	};
 	const options = {
-		expiresIn: "24h",
+		expiresIn: "222222s",
 	};
 	return jwt.sign(payload, JWT_SECRET, options);
 }

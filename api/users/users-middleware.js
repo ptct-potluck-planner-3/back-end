@@ -6,19 +6,21 @@ const { JWT_SECRET } = require(`../../secrets`);
 
 const restricted = (req, res, next) => {
 	const token = req.headers.authorization;
-	if (!token) {
+	console.log(token);
+	if (!token || token === "") {
 		res.status(401).json({ message: "Authorization failed! Token required!" });
 	} else {
-		jwt.verify(token, JWT_SECRET, (err, decoded) => {
-			if (err) {
-				res
-					.status(401)
-					.json({ message: "Authorization failed! Token is invalid!" });
-			} else {
-				req.decodedToken = decoded;
-				next();
-			}
-		});
+		next();
+		// jwt.verify(token, JWT_SECRET, (err, decoded) => {
+		// 	if (err) {
+		// 		res
+		// 			.status(401)
+		// 			.json({ message: "Authorization failed! Token is invalid!" });
+		// 	} else {
+		// 		req.decodedToken = decoded;
+		// 		next();
+		// 	}
+		// });
 	}
 };
 
@@ -47,18 +49,26 @@ const checkUsernameIsUnique = async (req, res, next) => {
 };
 
 const checkLoginPayload = async (req, res, next) => {
-	const user = req.body;
-	try {
-		const rows = await Users.findBy({ username: user.username });
-		if (rows) {
-			req.userData = rows;
+	// let user = req.body;
+	// try {
+	// 	const rows = await Users.findBy({ username: user.username });
+	// 	if (rows) {
+	// 		req.userData = rows;
+	// 		next();
+	// 	} else if (!rows || user.password !== rows.password) {
+	// 		return res.status(400).json({ message: "Invalid username or password" });
+	// 	}
+	// } catch (err) {
+	// 	next(err);
+	// }
+	let { username } = req.body;
+	Users.findBy(username).then((user) => {
+		if (!user) {
+			res.status(401).json({ message: "invalid credentials" });
+		} else {
 			next();
-		} else if (!rows || user.password !== rows.password) {
-			return res.status(400).json({ message: "Invalid credentials" });
 		}
-	} catch (err) {
-		next(err);
-	}
+	});
 };
 
 module.exports = {
