@@ -10,17 +10,17 @@ const restricted = (req, res, next) => {
 	if (!token || token === "") {
 		res.status(401).json({ message: "Authorization failed! Token required!" });
 	} else {
-		next();
-		// jwt.verify(token, JWT_SECRET, (err, decoded) => {
-		// 	if (err) {
-		// 		res
-		// 			.status(401)
-		// 			.json({ message: "Authorization failed! Token is invalid!" });
-		// 	} else {
-		// 		req.decodedToken = decoded;
-		// 		next();
-		// 	}
-		// });
+		// next();
+		jwt.verify(token, JWT_SECRET, (err, decoded) => {
+			if (err) {
+				res
+					.status(401)
+					.json({ message: "Authorization failed! Token is invalid!" });
+			} else {
+				req.decodedToken = decoded;
+				next();
+			}
+		});
 	}
 };
 
